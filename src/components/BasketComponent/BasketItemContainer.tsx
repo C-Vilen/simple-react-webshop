@@ -31,7 +31,6 @@ export default function BasketItemContainer({
   // Output name
   const outputName = customerName || `${customer.firstName}'s basket`;
 
-  // Fetch basket from API
   const refetchBasket = async () => {
     const response = await fetch(
       `http://localhost:3000/baskets/${customer.customerId}`
@@ -40,7 +39,6 @@ export default function BasketItemContainer({
     setProducts(data);
   };
 
-  // Buy product
   const buyProduct = async (prodId: number) => {
     await fetch(
       `http://localhost:3000/baskets/${customer.customerId}/${prodId}`,
@@ -51,7 +49,6 @@ export default function BasketItemContainer({
     refetchBasket();
   };
 
-  // Remove product
   const removeProduct = async (prodId: number) => {
     await fetch(
       `http://localhost:3000/baskets/${customer.customerId}/${prodId}`,
@@ -62,7 +59,6 @@ export default function BasketItemContainer({
     refetchBasket();
   };
 
-  // Buy all
   const buyAll = async () => {
     if (products.length === 0) {
       toast.error("You have no products in the basket", {
@@ -89,17 +85,14 @@ export default function BasketItemContainer({
     }
   };
 
-  // Update product count in parent
   useEffect(() => {
     updateProductCount(products.length);
   }, [products.length, updateProductCount]);
 
-  // Fetch basket on customer change
   useEffect(() => {
     refetchBasket();
   }, [customer.customerId]);
 
-  // Build product map for efficient rendering
   const productMap = products.reduce<
     Record<number, { product: Product; count: number }>
   >((acc, product) => {
@@ -111,7 +104,6 @@ export default function BasketItemContainer({
     return acc;
   }, {});
 
-  // Total amount
   const totalAmount = products.reduce(
     (acc, product) => acc + product.productPrice,
     0
