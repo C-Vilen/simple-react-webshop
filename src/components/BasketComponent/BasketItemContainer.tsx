@@ -94,15 +94,17 @@ export default function BasketItemContainer({
   }, [customer.customerId]);
 
   const productMap = products.reduce<
-    Record<number, { product: Product; count: number }>
+    Map<number, { product: Product; count: number }>
   >((acc, product) => {
-    if (!acc[product.productId]) {
-      acc[product.productId] = { product, count: 1 };
+    if (!acc.has(product.productId)) {
+      acc.set(product.productId, { product, count: 1 });
     } else {
-      acc[product.productId].count++;
+      const existing = acc.get(product.productId)!;
+      existing.count++;
+      acc.set(product.productId, existing);
     }
     return acc;
-  }, {});
+  }, new Map());
 
   const totalAmount = products.reduce(
     (acc, product) => acc + product.productPrice,
